@@ -1,0 +1,16 @@
+// Armand Sarkezians
+// April 23th 2019
+// This class compares two songs by their times
+
+package AssignmentFour;
+
+import java.util.*;
+public class TimeCompare implements Comparator <Song>{
+
+    public int compare (Song song1, Song song2){
+//        return song1.getTime().compareTo (song2.getTime()); must figure out how to check for time when its an int and when its a string
+        //might need 2 time comparators
+        return 0;
+    } // will change later
+
+}
