@@ -1,0 +1,440 @@
+// Armand Sarkezians
+// April 17th 2019
+// This program takes in a list of CD's and performs different operations on it, depending on input from the user
+
+// Removing a CD or Song only gets input (with proper error checks), but doesn't remove the song / CD yet
+package AssignmentFour;
+
+import javax.swing.*;
+import java.awt.*; // Abstract Windows Toolkit
+import java.awt.event.*;
+import java.util.concurrent.*;
+import java.io.*;
+import java.util.*;
+
+
+public class Driver extends JPanel implements MouseListener{
+    private int screen = 1;
+    private ArrayList <CD> CDList = new ArrayList <CD> ();
+    private int specificCD;
+
+    private Driver (){
+        setPreferredSize(new Dimension (800, 600)); // setting size
+        setFocusable(true); // setting the window focusable for mouse listener
+        addMouseListener(this); // adding mouse listener
+    } // preferences
+
+    public void paint (Graphics g){
+        super.paintComponent(g);
+        g.setColor (Color.white);
+        g.fillRect (0, 0, 800, 600);
+        g.setColor (Color.black);
+        g.drawRect (20, 200, 350, 200);
+        g.drawRect (420, 200, 350, 200);
+        g.drawRect (20, 450, 750, 100);
+        Image title = Toolkit.getDefaultToolkit ().getImage ("title.jpg"); //I have a image but im only allowed to attach 8 files to the moodle so ignore this for now
+        g.drawImage(title, 0, 0, this);
+        g.drawString ("Access the CD List", 137, 300);
+        g.drawString ("Access a specific CD", 530, 300);
+        g.drawString ("Exit", 385, 505);
+    } // constructing main screen
+
+    public void mouseReleased (MouseEvent e){}
+
+    public void mouseEntered (MouseEvent e){}
+
+    public void mouseExited (MouseEvent e){}
+
+    public void mousePressed (MouseEvent e){}
+
+    public void mouseClicked (MouseEvent e){
+        int x = e.getX();
+        int y = e.getY();
+        if (x > 20 && x < 370 && y > 200 && y < 400 && screen == 1){ // This if statement is for the main screen
+            //Access CD List
+            screen = 2;
+            accessCDList();
+        }else if (x > 420 && x < 770 && y > 200 && y < 400 && screen == 1){
+            findSpecificCD();
+        }else if (x > 20 && x < 770 && y > 450 && y < 550 && screen == 1){
+            System.exit(0);
+        }
+
+
+        else if (x > 700 && x < 799 && y > 500 &&y < 599 && screen == 2){ // Second Screen (left one)
+            screen = 1;
+            repaint();
+        }else if (x > 30 && y > 150 && x < 200 && y < 250 && screen == 2){
+            printCDList();
+        }else if (x > 220 && y > 150 && x < 390 && y < 250 && screen == 2){
+            specificInfoCD();
+        }else if (x > 410 && y > 150 && x < 580 && y < 250 && screen == 2){
+            readCD(); // add CD
+        }else if (x > 600 && y > 150 && x < 770 && y < 250 && screen == 2){
+            removeNumberCD();
+            // Remove a CD (same code as remove a song
+        }else if (x > 125 && y > 270 && x < 295 && y < 370 && screen == 2){ // copy a CD
+            CDCopy();
+        }else if (x > 315 && y > 270 && x < 485 && y < 370 && screen == 2){
+            // Create a Sub CD
+        }else if ( x > 505 && y > 270 && x < 675 && y < 370 && screen == 2){
+            // List common songs
+        }
+
+
+        else if (x > 700 && x < 799 && y > 500 &&y < 599 && screen == 3){ // Third Screen (right one)
+            screen = 1;
+            repaint();
+        }else if (x > 125 && y > 150 && x < 295 && y < 250 && screen == 3){
+            printSongs();
+        }else if (x > 315 && y > 150 && x < 485 && y < 250 && screen == 3){// info for a specific song
+            specificSongInfo();
+        }else if (x > 505 && y > 150 && x < 675 && y < 250 && screen == 3){
+            // Add song
+        }else if (x > 220 && y > 270 && x < 390 && y < 370 && screen == 3){
+            screen = 4;
+            removeSong();
+            // Remove Songs
+        }else if (x > 410 && y > 270 && x < 580 && y < 370 && screen == 3){
+            screen = 5;
+            sortSong();
+            // Sort Songs
+        }
+
+
+        else if (x > 700 && x < 799 && y > 500 &&y < 599 && screen == 4) { // fourth screen (remove song)
+            screen = 3;
+            accessSpecificCD();
+        }else if (x > 30 && y > 150 && x < 200 && y < 250 && screen == 4){
+            removeNumberSong();
+            // remove by song #
+        }else if (x > 220 && y > 150 && x < 390 && y < 250 && screen == 4){
+            // remove by song name
+        }else if (x > 410 && y > 150 && x < 580 && y < 250 && screen == 4){
+            // remove first song
+        }else if (x > 600 && y > 150 && x < 770 && y < 250 && screen == 4){
+            // remove last song
+        }
+
+
+        else if (x > 700 && x < 799 && y > 500 &&y < 599 && screen == 5) { // fifth screen (sort songs)
+            screen = 3;
+            accessSpecificCD();
+        }else if (x > 125 && y > 150 && x < 295 && y < 250 && screen == 5){
+            // sort by title
+        }else if (x > 315 && y >  150 && x < 485 && y < 250 && screen == 5){
+            // sort by artist
+        }else if (x > 505 && y > 150 && x < 675 && y < 250 && screen == 5){
+            // sort by time
+        }
+
+
+        else if (x > 700 && x < 799 && y > 500 &&y < 599 && screen == 6){ // back button for displaying CD's
+            screen = 2;
+            accessCDList();
+        }
+
+        else if (x > 700 && x < 799 && y > 500 &&y < 599 && screen == 7){ // back button for displaying songs
+            screen = 3;
+            accessSpecificCD();
+        }
+
+    } // checking for mouse input
+
+    private void findSpecificCD (){
+        if (CDList.size() > 0){
+            String [] stringArray = new String [CDList.size()];
+            for (int x = 0; x < CDList.size(); x++){
+                stringArray [x] = CDList.get(x).getCDTitle();
+            }
+            String cd = JOptionPane.showInputDialog(null, "Pick a CD", "Get Specific CD", JOptionPane.PLAIN_MESSAGE , null, stringArray, "Pick A CD").toString();
+            int posOfRemove = Collections.binarySearch(CDList, new CD(cd, 0, null));
+
+            if (posOfRemove >= 0){
+                specificCD = posOfRemove;
+                screen = 3;
+                accessSpecificCD();
+            }
+
+        }else {
+            JOptionPane.showMessageDialog (null, "There are no CD's added");
+        }
+    }
+
+    private void specificInfoCD (){
+        if (CDList.size() > 0) {
+            String [] stringArray = new String [CDList.size()];
+            for (int x = 0; x < CDList.size(); x++){
+                stringArray [x] = CDList.get(x).getCDTitle();
+            }
+            String cd = JOptionPane.showInputDialog(null, "Pick a CD", "Display CD Information", JOptionPane.PLAIN_MESSAGE , null, stringArray, "Pick A CD").toString();
+            int posOfInfo = Collections.binarySearch(CDList, new CD(cd, 0, null));
+
+            if (posOfInfo >= 0){
+                JOptionPane.showMessageDialog (null, CDList.get(posOfInfo));
+            }
+        }else{
+            JOptionPane.showMessageDialog (null, "There are no CD's added");
+        }
+    }
+
+    private void removeNumberCD() {
+        if (CDList.size() > 0){
+            String [] stringArray = new String [CDList.size()];
+            for (int x = 0; x < CDList.size(); x++){
+                stringArray [x] = CDList.get(x).getCDTitle();
+            }
+            String cd = JOptionPane.showInputDialog(null, "Pick a CD", "Remove CD", JOptionPane.PLAIN_MESSAGE , null, stringArray, "Pick A CD").toString();
+            int posOfRemove = Collections.binarySearch(CDList, new CD(cd, 0, null));
+
+            if (posOfRemove >= 0){
+                CDList.remove (CDList.get (posOfRemove));
+            }
+
+        }else {
+            JOptionPane.showMessageDialog (null, "There are no CD's added");
+        }
+    } // creating new console and saving input
+
+    private void removeNumberSong () {
+        try{
+            String removeNumber = JOptionPane.showInputDialog("Enter in the position of the Song");
+            if (Integer.parseInt(removeNumber) >= 0 && Integer.parseInt(removeNumber) < CDList.get(specificCD).getSongList().size()) {
+                CDList.get(specificCD).getSongList().remove (removeNumber);
+                JOptionPane.showMessageDialog (null, "Done!");
+            }
+        }catch (NumberFormatException e){
+            System.out.println ("Invalid input");
+       }
+    }
+
+    private void readCD (){
+        String readNumber = "";
+        try {
+            readNumber = JOptionPane.showInputDialog("Enter in the file name (including .txt)");
+            BufferedReader in = new BufferedReader (new FileReader (readNumber));
+            String CDTitle = in.readLine();
+            int totalSongs = Integer.parseInt (in.readLine());
+            ArrayList <Song> allSongs = new ArrayList <> ();
+            for (int x = 0; x < totalSongs; x++){
+                allSongs.add (new Song (in.readLine(), in.readLine(), in.readLine(), Integer.parseInt(in.readLine()), in.readLine()));
+            }
+//            Collections.sort (allSongs); SORT THIS LATER
+            CDList.add(new CD(CDTitle, totalSongs, allSongs));
+            Collections.sort (CDList);
+            JOptionPane.showMessageDialog (null, "Done!");
+        }catch (IOException e){
+            JOptionPane.showMessageDialog (null, "File Was Not Found // Reading Error");
+        }
+    }
+
+    private void CDCopy (){
+//        try{
+//            String copyPosition = JOptionPane.showInputDialog("Enter in the position of the CD you wish to copy");
+//            if (Integer.parseInt(copyPosition) >= 0 && Integer.parseInt(copyPosition) < CDList.size()){
+//                CDList.add (new CD (CDList.get(Integer.parseInt(copyPosition)).getCDTitle() + "copy", CDList.get(Integer.parseInt(copyPosition)).getNumOfSongs(),CDList.get(Integer.parseInt(copyPosition)).getSongList() ));
+//                JOptionPane.showMessageDialog(null, "Done!");
+//            }
+//        }catch (NumberFormatException a){
+//            JOptionPane.showMessageDialog(null, "Invalid input");
+//        }
+
+        if (CDList.size() > 0){
+            String [] stringArray = new String [CDList.size()];
+            for (int x = 0; x < CDList.size(); x++){
+                stringArray [x] = CDList.get(x).getCDTitle();
+            }
+            String cd = JOptionPane.showInputDialog(null, "Pick a CD", "Copy CD", JOptionPane.PLAIN_MESSAGE , null, stringArray, "Pick A CD").toString();
+            int posOfRemove = Collections.binarySearch(CDList, new CD(cd, 0, null));
+
+            if (posOfRemove >= 0){
+                CDList.add (new CD (CDList.get(posOfRemove).getCDTitle() + " copy", CDList.get(posOfRemove).getNumOfSongs(), CDList.get(posOfRemove).getSongList()));
+            }
+
+        }else {
+            JOptionPane.showMessageDialog (null, "There are no CD's added");
+        }
+
+    }
+
+    private void printCDList(){
+        screen = 6;
+        Graphics g = getGraphics();
+        g.setColor (Color.white);
+        g.fillRect (0, 0, 800, 600);
+        g.setColor (Color.black);
+        for (int x = 0; x < CDList.size(); x++){
+            g.drawString (CDList.get(x) + "", 0, (20 * x) + 20); // toString not getting called properly?, had to redo toString as \n wasnt getting used
+        }
+
+        g.drawRect (700, 500, 101, 101); // Back Button
+        g.drawString ("Back", 740, 550);
+
+//        }
+    } // drawing
+
+    private void accessCDList (){ // just drawing
+        Graphics g = getGraphics();
+        g.setColor (Color.white);
+        g.fillRect (0, 0, 800, 600);
+        g.setColor (Color.black);
+        g.drawString ("Submenu #1:", 0, 20);
+
+        g.drawRect (700, 500, 101, 101); // Back button
+        g.drawString ("Back", 740, 550);
+
+        g.drawRect (30, 150, 170, 100); // Display CD Information
+        g.drawString ("Display CD Information", 50, 200);
+
+        g.drawRect (220, 150, 170, 100); // Display information about a particular CD
+        g.drawString ("Display Information for", 240, 200);
+        g.drawString ("a Particular CD", 260, 220);
+
+        g.drawRect (410, 150, 170, 100); // Add a CD
+        g.drawString ("Add a CD", 465, 200);
+
+        g.drawRect (600, 150, 170, 100); // Remove a CD
+        g.drawString ("Remove a CD", 645, 200);
+
+        //Second Row
+        g.drawRect (125, 270, 170, 100); // Copy a CD
+        g.drawString ("Copy a CD", 180, 320);
+
+        g.drawRect (315, 270, 170, 100); // Create a Sub CD
+        g.drawString ("Create a Sub-CD", 350, 320);
+
+        g.drawRect (505, 270, 170, 100); // List Common Songs
+        g.drawString ("List Similar Songs", 540, 310);
+        g.drawString ("Between Two CDs", 540, 330);
+
+    } // just drawing
+
+    private void accessSpecificCD(){
+        Graphics g = getGraphics();
+        g.setColor (Color.white);
+        g.fillRect (0, 0, 800, 600);
+        g.setColor (Color.black);
+        g.drawString ("Submenu #2:", 0, 20);
+
+        g.drawRect (700, 500, 101, 101); // Back Button
+        g.drawString ("Back", 740, 550);
+
+        g.drawRect (125, 150, 170, 100); // List all songs
+        g.drawString ("Display All Songs", 160, 200);
+
+        g.drawRect (315, 150, 170, 100); // Display info on 1 song
+        g.drawString ("Display Info on a", 350, 200);
+        g.drawString ("Particular Song", 355, 220);
+
+        g.drawRect (505, 150, 170, 100); // Add a song
+        g.drawString ("Add A Song", 555, 200);
+
+        //Second Row
+        g.drawRect (220, 270, 170, 100); // Remove Songs
+        g.drawString ("Remove a Song", 260, 320);
+
+        g.drawRect (410, 270, 170, 100); // sort songs
+        g.drawString ("Sort Songs", 470, 320);
+
+
+    } // just drawing
+
+    private void removeSong (){
+        Graphics g = getGraphics ();
+        g.setColor (Color.white);
+        g.fillRect (0, 0, 800, 600);
+        g.setColor (Color.black);
+        g.drawString ("Removal Menu", 0, 20);
+
+        g.drawRect (700, 500, 101, 101); // Back button
+        g.drawString ("Back", 740, 550);
+
+        g.drawRect (30, 150, 170, 100); // remove by song #
+        g.drawString ("Remove by Song #", 50, 200);
+
+        g.drawRect (220, 150, 170, 100); // remove by name
+        g.drawString ("Remove by Name", 250, 200);
+
+        g.drawRect (410, 150, 170, 100); // remove first song
+        g.drawString ("Remove First Song", 445, 200);
+
+        g.drawRect (600, 150, 170, 100); // remove last song
+        g.drawString ("Remove Last Song", 625, 200);
+    } // just drawing
+
+    private void sortSong (){
+        Graphics g = getGraphics();
+        g.setColor (Color.white);
+        g.fillRect (0, 0, 800, 600);
+        g.setColor (Color.black);
+        g.drawString ("Sorting Menu", 0, 20);
+
+        g.drawRect (700, 500, 101, 101); // Back Button
+        g.drawString ("Back", 740, 550);
+
+        g.drawRect (125, 150, 170, 100); // Sort by title
+        g.drawString ("Sort by title", 170, 200);
+
+        g.drawRect (315, 150, 170, 100); // Sort by artist
+        g.drawString ("Sort by artist", 360, 200);
+
+        g.drawRect (505, 150, 170, 100); // Sort by time
+        g.drawString ("Sort by time", 555, 200);
+    } // just drawing
+
+    private void printSongs (){
+        String totalSong = "Songs in " + CDList.get(specificCD).getCDTitle() + ": \n\n";
+        for (int x = 0; x < CDList.get(specificCD).getSongList().size(); x++){
+            totalSong += CDList.get(specificCD).getSongList().get(x).getTitle() + "\n";
+        }
+
+        JOptionPane.showMessageDialog(null, totalSong);
+
+    }
+
+    private void specificSongInfo (){
+//        try{
+//            String song = JOptionPane.showInputDialog("Enter in the position of the song you wish to get info for");
+//            if (Integer.parseInt(song) >= 0 && Integer.parseInt(song) < CDList.get(specificCD).getSongList().size()){
+//                JOptionPane.showMessageDialog(null, CDList.get(specificCD).getSongList().get(Integer.parseInt (song)));
+//            }
+//        }catch (NumberFormatException e){
+//            JOptionPane.showMessageDialog(null, "Invalid number");
+//        }
+
+        if (CDList.size() > 0){
+            String [] stringArray = new String [CDList.get(specificCD).getSongList().size()];
+            for (int x = 0; x < CDList.size(); x++){
+                stringArray [x] = CDList.get(specificCD).getSongList().get(x).getTitle();
+            }
+            String song = JOptionPane.showInputDialog(null, "Pick a Song", "Display Song Info", JOptionPane.PLAIN_MESSAGE , null, stringArray, "Pick A Song").toString();
+            int posOfInfo = 0;
+//            int posOfInfo = Collections.binarySearch /* Might need to be sorted */ (CDList.get(specificCD).getSongList(), new Song (song, "", "", 0, ""));
+
+            if (posOfInfo >= 0){
+                JOptionPane.showMessageDialog (null, CDList.get(posOfInfo));
+            }
+
+        }else {
+            JOptionPane.showMessageDialog (null, "There are no CD's added");
+        }
+
+
+    }
+
+    private void delay (int millisec){
+        try{ // Sleep program needs to be surrounded by a try/catch
+            TimeUnit.MILLISECONDS.sleep(millisec);} // delays program for a certain number of milliseconds
+        catch (InterruptedException e){}} // delay program
+
+    public static void main (String [] args){
+        JFrame frame = new JFrame ("Assignment Four"); // creating JFrame
+        Driver myPanel = new Driver (); // creating panel (container)
+        myPanel.setLayout (new BoxLayout (myPanel, BoxLayout.PAGE_AXIS)); // setting points to stay on left hand side of the screen
+        frame.add(myPanel); // adding container to frame
+        frame.pack (); // packing both together
+        frame.setVisible (true); // setting frame to visible so everything is drawn on the screen
+        myPanel.setBackground(Color.white);
+    } // creating JFrame and JPanel
+
+}
