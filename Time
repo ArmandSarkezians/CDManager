@@ -1,0 +1,37 @@
+// Armand Sarkezians
+// April 23th 2019
+// This program finds the duration of one song
+
+package AssignmentFour;
+
+public class Time {
+    private String time;
+    private int integerTime;
+
+    // getters
+    public String getTime() {
+        return time;
+    }
+
+    public int getIntegerTime() {
+        return integerTime;
+    }
+
+    //setters
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public void setIntegerTime(int integerTime) {
+        this.integerTime = integerTime;
+    }
+
+    //constructor
+    public Time (String t){
+        time = t;
+    }
+
+    public Time (int t){
+        integerTime = t;
+    }
+}
