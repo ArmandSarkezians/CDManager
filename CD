@@ -1,0 +1,74 @@
+// Armand Sarkezians
+// April 23th 2019
+// This program constructs a CD object and has a list of songs, and alters them based on input from the user
+
+package AssignmentFour;
+
+import java.util.ArrayList;
+
+public class CD implements Comparable <CD> {
+    private String CDTitle;
+    private int numOfSongs;
+    private ArrayList <Song> songList = new ArrayList <Song> ();
+    private Time totalTime;
+
+    //getters
+    public String getCDTitle() {
+        return CDTitle;
+    }
+
+    public int getNumOfSongs() {
+        return numOfSongs;
+    }
+
+    public ArrayList<Song> getSongList() {
+        return songList;
+    }
+
+    public Time getTotalTime() {
+        return totalTime;
+    }
+
+    //setters
+    public void setCDTitle(String CDTitle) {
+        this.CDTitle = CDTitle;
+    }
+
+    public void setNumOfSongs(int numOfSongs) {
+        this.numOfSongs = numOfSongs;
+    }
+
+    public void setSongList(ArrayList<Song> songList) {
+        this.songList = songList;
+    }
+
+    public void setTotalTime(Time totalTime) {
+        this.totalTime = totalTime;
+    }
+
+
+    // overriding methods
+    public String toString (){ return CDTitle + " has " + numOfSongs + " songs in it"; }
+
+    public int compareTo (CD cd1){ return this.CDTitle.compareTo(cd1.getCDTitle()); }
+
+
+    // additiional methods
+    private void addSong (Song song1){}
+
+    // remove song is in driver class
+
+    // display info is in driver class
+
+    private void displayCertainInfo (int pos){}
+
+    private void sort (){}
+
+    //constructors
+    public CD (String t, int n, ArrayList ar){
+        CDTitle = t;
+        numOfSongs = n;
+        songList = ar;
+    }
+
+}
